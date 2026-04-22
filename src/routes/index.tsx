@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { motion } from "framer-motion";
-import { ArrowRight, ArrowUpRight, Star, GitFork, Sparkles } from "lucide-react";
-import { useEffect, useState, type ReactNode } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight, ArrowUpRight, Star, GitFork, Sparkles, ExternalLink } from "lucide-react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { SiTypescript, SiJavascript, SiPhp, SiLinux, SiGithub, SiDiscord, SiInstagram } from "react-icons/si";
 import { TbBrandCSharp, TbBrandWindows } from "react-icons/tb";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -27,39 +28,54 @@ const os = [
   { name: "Windows", Icon: TbBrandWindows, color: "#0078D6" },
 ];
 
-const projects = [
+type Project = {
+  repo: string;
+  title: string;
+  stack: string[];
+  description: string;
+  long: string;
+};
+
+const projects: Project[] = [
   {
     repo: "InsaneKick",
     title: "InsaneKick",
     stack: ["Java", "SpigotAPI", "Bukkit"],
     description:
-      "Jednoduchý Minecraft plugin, který hráče po každé smrti automaticky vyhodí ze serveru. Hlavně určen na eventy.",
+      "Jednoduchý Minecraft plugin, který hráče po každé smrti automaticky vyhodí ze serveru.",
+    long: "Lehký Minecraft plugin postavený na SpigotAPI a Bukkit. Naslouchá PlayerDeathEvent a hráče okamžitě po smrti odpojí ze serveru. Hlavně určen na eventy typu hardcore / last man standing, kde každá chyba znamená konec.",
   },
   {
     repo: "MessageBot",
     title: "MessageBot",
     stack: ["TypeScript", "Discord.js"],
     description:
-      "Discord bot v TypeScriptu s dynamickým načítáním příkazů a eventů — help, stats, send, senddm a info, plná podpora interakcí.",
+      "Discord bot v TypeScriptu s dynamickým načítáním příkazů a eventů.",
+    long: "Modulární Discord bot napsaný v TypeScriptu nad Discord.js. Dynamicky načítá příkazy i eventy ze složek, takže přidat nový command znamená jen vytvořit soubor. Obsahuje příkazy help, stats, send, senddm a info, plnou podporu slash interakcí i klasických zpráv.",
   },
   {
     repo: "pckgi",
     title: "pckgi",
     stack: ["JavaScript", "NPM"],
     description: "Moderní CLI nástroj pro správu balíčků NPM.",
+    long: "pckgi je moderní CLI alternativa pro práci s NPM balíčky. Navržený s důrazem na rychlost, čistý výstup a příjemné UX v terminálu. Vhodné pro každodenní work s npm projekty.",
   },
 ];
+
+const allTags = Array.from(new Set(projects.flatMap((p) => p.stack)));
 
 const contacts = [
   { name: "GitHub", handle: "Bloby22", href: "https://github.com/Bloby22", Icon: SiGithub },
   { name: "Discord", handle: "blobycz", href: "https://discord.com/users/1178258199590228078", Icon: SiDiscord },
-  { name: "Instagram", handle: "blobyc", href: "https://instagram.com/blobyc", Icon: SiInstagram },
+  { name: "Instagram", handle: "blobycz", href: "https://instagram.com/blobycz", Icon: SiInstagram },
 ];
 
 type RepoMeta = { stargazers_count: number; forks_count: number };
 
 function Home() {
   const [meta, setMeta] = useState<Record<string, RepoMeta>>({});
+  const [filter, setFilter] = useState<string>("Vše");
+  const [open, setOpen] = useState<Project | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -82,6 +98,11 @@ function Home() {
       cancelled = true;
     };
   }, []);
+
+  const filtered = useMemo(
+    () => (filter === "Vše" ? projects : projects.filter((p) => p.stack.includes(filter))),
+    [filter]
+  );
 
   return (
     <main className="relative overflow-hidden">
@@ -111,7 +132,7 @@ function Home() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.8 }}
-            className="text-gradient-light mt-8 text-balance text-6xl font-semibold leading-[0.95] tracking-[-0.04em] md:text-8xl"
+            className="text-gradient-light mt-8 text-balance text-5xl font-semibold leading-[0.95] tracking-[-0.04em] sm:text-6xl md:text-8xl"
           >
             Stavím to,
             <br />
@@ -191,14 +212,41 @@ function Home() {
 
         {/* Projects */}
         <Section id="projekty" eyebrow="02 — Projekty" title="Vybraná práce.">
-          <div className="mt-12 grid gap-4">
-            {projects.map((p, i) => (
-              <FadeIn key={p.repo} delay={i * 0.06}>
-                <a
-                  href={`https://github.com/Bloby22/${p.repo}`}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="card-hover group relative block overflow-hidden rounded-3xl border border-border bg-surface/60 p-7 backdrop-blur-xl"
+          <FadeIn>
+            <div className="mt-10 flex flex-wrap gap-2">
+              {["Vše", ...allTags].map((t) => {
+                const isActive = filter === t;
+                return (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => setFilter(t)}
+                    className={`relative rounded-full border px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-wider transition-all ${
+                      isActive
+                        ? "border-foreground/50 bg-foreground text-background"
+                        : "border-border bg-surface/60 text-muted-foreground hover:border-foreground/30 hover:text-foreground"
+                    }`}
+                  >
+                    {t}
+                  </button>
+                );
+              })}
+            </div>
+          </FadeIn>
+
+          <div className="mt-8 grid gap-4">
+            <AnimatePresence mode="popLayout">
+              {filtered.map((p, i) => (
+                <motion.button
+                  key={p.repo}
+                  layout
+                  type="button"
+                  onClick={() => setOpen(p)}
+                  initial={{ opacity: 0, y: 18 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.5, delay: i * 0.05, ease: [0.22, 1, 0.36, 1] }}
+                  className="card-hover group relative block overflow-hidden rounded-3xl border border-border bg-surface/60 p-7 text-left backdrop-blur-xl"
                 >
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-foreground/[0.04] via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                   <div className="relative flex items-start justify-between gap-4">
@@ -235,16 +283,21 @@ function Home() {
                       </span>
                     </div>
                   )}
-                </a>
-              </FadeIn>
-            ))}
+                </motion.button>
+              ))}
+            </AnimatePresence>
+            {filtered.length === 0 && (
+              <p className="rounded-2xl border border-dashed border-border bg-surface/40 p-10 text-center font-mono text-sm text-muted-foreground">
+                Žádný projekt s tímto filtrem.
+              </p>
+            )}
           </div>
         </Section>
 
         {/* Contact */}
         <Section id="kontakt" eyebrow="03 — Kontakt" title="Pojďme zůstat ve spojení.">
           <p className="mt-6 max-w-xl text-lg text-muted-foreground">
-            Otevřený nápadům, projektům i kávě v Brně.
+            Otevřený nápadům a projektům.
           </p>
           <div className="mt-12 grid gap-3">
             {contacts.map((c, i) => (
@@ -276,6 +329,69 @@ function Home() {
           <span>built with care</span>
         </footer>
       </div>
+
+      {/* Project detail modal */}
+      <Dialog open={!!open} onOpenChange={(v) => !v && setOpen(null)}>
+        <DialogContent className="max-w-2xl overflow-hidden border-border bg-background/95 p-0 backdrop-blur-2xl sm:rounded-3xl">
+          {open && (
+            <div className="relative">
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-foreground/[0.05] via-transparent to-transparent" />
+              <div className="relative p-7 md:p-9">
+                <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+                  Projekt
+                </div>
+                <DialogTitle className="text-gradient-light mt-3 text-3xl font-semibold tracking-[-0.02em] md:text-4xl">
+                  {open.title}
+                </DialogTitle>
+                <div className="mt-4 flex flex-wrap gap-1.5">
+                  {open.stack.map((s) => (
+                    <span
+                      key={s}
+                      className="rounded-full border border-border bg-background/40 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground"
+                    >
+                      {s}
+                    </span>
+                  ))}
+                </div>
+                <DialogDescription className="mt-6 text-base leading-relaxed text-muted-foreground">
+                  {open.long}
+                </DialogDescription>
+
+                {meta[open.repo] && (
+                  <div className="mt-6 flex items-center gap-5 font-mono text-xs text-muted-foreground">
+                    <span className="inline-flex items-center gap-1.5">
+                      <Star className="h-3.5 w-3.5" /> {meta[open.repo].stargazers_count}
+                    </span>
+                    <span className="inline-flex items-center gap-1.5">
+                      <GitFork className="h-3.5 w-3.5" /> {meta[open.repo].forks_count}
+                    </span>
+                  </div>
+                )}
+
+                <div className="mt-8 flex flex-wrap gap-2">
+                  <a
+                    href={`https://github.com/Bloby22/${open.repo}`}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-transform hover:scale-[1.02]"
+                  >
+                    <SiGithub size={15} />
+                    Otevřít na GitHubu
+                    <ExternalLink className="h-3.5 w-3.5" />
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => setOpen(null)}
+                    className="inline-flex items-center rounded-full border border-border bg-surface/60 px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-surface-2"
+                  >
+                    Zavřít
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </main>
   );
 }
@@ -295,7 +411,7 @@ function Section({
     <section id={id} className="scroll-mt-28 py-32">
       <FadeIn>
         <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">{eyebrow}</p>
-        <h2 className="text-gradient-light mt-4 text-balance text-5xl font-semibold tracking-[-0.03em] md:text-6xl">
+        <h2 className="text-gradient-light mt-4 text-balance text-4xl font-semibold tracking-[-0.03em] sm:text-5xl md:text-6xl">
           {title}
         </h2>
       </FadeIn>

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { ArrowRight, ArrowUpRight, Star, GitFork } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Star, GitFork, Sparkles } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { SiTypescript, SiJavascript, SiPhp, SiLinux, SiGithub, SiDiscord, SiInstagram } from "react-icons/si";
 import { TbBrandCSharp, TbBrandWindows } from "react-icons/tb";
@@ -31,21 +31,21 @@ const projects = [
   {
     repo: "InsaneKick",
     title: "InsaneKick",
-    stack: "Java · SpigotAPI · Bukkit",
+    stack: ["Java", "SpigotAPI", "Bukkit"],
     description:
       "Jednoduchý Minecraft plugin, který hráče po každé smrti automaticky vyhodí ze serveru. Hlavně určen na eventy.",
   },
   {
     repo: "MessageBot",
     title: "MessageBot",
-    stack: "TypeScript · Discord.js",
+    stack: ["TypeScript", "Discord.js"],
     description:
       "Discord bot v TypeScriptu s dynamickým načítáním příkazů a eventů — help, stats, send, senddm a info, plná podpora interakcí.",
   },
   {
     repo: "pckgi",
     title: "pckgi",
-    stack: "JavaScript · NPM",
+    stack: ["JavaScript", "NPM"],
     description: "Moderní CLI nástroj pro správu balíčků NPM.",
   },
 ];
@@ -84,152 +84,198 @@ function Home() {
   }, []);
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-6">
-      {/* Hero */}
-      <section id="domu" className="relative flex min-h-screen flex-col items-center justify-center text-center">
-        <div className="absolute inset-0 -z-10 grid-bg" />
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.6 }}
-          className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-3 py-1 font-mono text-xs text-muted-foreground backdrop-blur"
-        >
-          <span className="h-1.5 w-1.5 rounded-full bg-foreground" />
-          k dispozici pro spolupráci
-        </motion.div>
+    <main className="relative overflow-hidden">
+      {/* Ambient background */}
+      <div className="pointer-events-none fixed inset-0 -z-10">
+        <div className="absolute -top-40 left-1/2 h-[600px] w-[900px] -translate-x-1/2 rounded-full bg-foreground/[0.04] blur-3xl animate-blob" />
+        <div className="absolute top-[40%] -left-40 h-[500px] w-[500px] rounded-full bg-foreground/[0.03] blur-3xl animate-blob" style={{ animationDelay: "-6s" }} />
+        <div className="absolute bottom-0 right-0 h-[500px] w-[500px] rounded-full bg-foreground/[0.03] blur-3xl animate-blob" style={{ animationDelay: "-12s" }} />
+        <div className="absolute inset-0 noise mix-blend-overlay" />
+      </div>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.7 }}
-          className="mt-8 text-balance text-5xl font-semibold leading-[1.05] tracking-tight md:text-7xl"
-        >
-          Stavím to,<br />co nikdo nevidí.
-        </motion.h1>
-
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35, duration: 0.7 }}
-          className="mx-auto mt-6 max-w-lg text-balance text-base text-muted-foreground md:text-lg"
-        >
-          „Dobrý kód je tichý. Jen funguje.“
-        </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.6 }}
-          className="mt-10 flex items-center justify-center gap-3"
-        >
-          <a
-            href="#projekty"
-            className="group inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-transform hover:scale-[1.02]"
+      <div className="mx-auto w-full max-w-5xl px-6">
+        {/* Hero */}
+        <section id="domu" className="relative flex min-h-screen flex-col items-center justify-center text-center">
+          <div className="absolute inset-0 -z-10 grid-bg" />
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.6 }}
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground backdrop-blur-xl"
           >
-            Projekty
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </a>
-          <a
-            href="#kontakt"
-            className="inline-flex items-center rounded-full border border-border bg-surface/60 px-5 py-2.5 text-sm font-medium text-foreground backdrop-blur transition-colors hover:bg-surface-2"
+            <Sparkles className="h-3 w-3" />
+            backend · z brna
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.8 }}
+            className="text-gradient-light mt-8 text-balance text-6xl font-semibold leading-[0.95] tracking-[-0.04em] md:text-8xl"
           >
-            Kontakt
-          </a>
-        </motion.div>
-      </section>
+            Stavím to,
+            <br />
+            <span className="italic font-light">co nikdo nevidí.</span>
+          </motion.h1>
 
-      {/* About */}
-      <Section id="o-mne" eyebrow="O mě" title="Ahoj, jsem BlobyCZ.">
-        <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-          Jsem z Brna a pracuji převážně na backendu. Baví mě stavět spolehlivé
-          služby, čistá API a nástroje, které ostatním zjednoduší práci.
-        </p>
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.7 }}
+            className="mx-auto mt-8 max-w-md text-balance text-base text-muted-foreground md:text-lg"
+          >
+            „Dobrý kód je tichý. Jen funguje.“
+          </motion.p>
 
-        <SubSection title="Jazyky">
-          {langs.map((l) => (
-            <Chip key={l.name} name={l.name}>
-              <l.Icon size={18} color={l.color} />
-            </Chip>
-          ))}
-        </SubSection>
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.55, duration: 0.6 }}
+            className="mt-12 flex items-center justify-center gap-2"
+          >
+            <a
+              href="#projekty"
+              className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-all hover:gap-3"
+            >
+              <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+              Projekty
+              <ArrowRight className="h-4 w-4" />
+            </a>
+            <a
+              href="#kontakt"
+              className="inline-flex items-center rounded-full border border-border bg-surface/40 px-6 py-3 text-sm font-medium text-foreground backdrop-blur-xl transition-colors hover:bg-surface-2"
+            >
+              Kontakt
+            </a>
+          </motion.div>
 
-        <SubSection title="Systémy">
-          {os.map((o) => (
-            <Chip key={o.name} name={o.name}>
-              <o.Icon size={18} color={o.color} />
-            </Chip>
-          ))}
-        </SubSection>
-      </Section>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1, duration: 1 }}
+            className="absolute bottom-10 left-1/2 -translate-x-1/2"
+          >
+            <div className="flex h-9 w-5 items-start justify-center rounded-full border border-border p-1">
+              <motion.div
+                animate={{ y: [0, 10, 0] }}
+                transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+                className="h-1.5 w-1 rounded-full bg-muted-foreground"
+              />
+            </div>
+          </motion.div>
+        </section>
 
-      {/* Projects */}
-      <Section id="projekty" eyebrow="Projekty" title="Vybraná práce.">
-        <div className="mt-10 grid gap-4">
-          {projects.map((p, i) => (
-            <FadeIn key={p.repo} delay={i * 0.06}>
-              <a
-                href={`https://github.com/Bloby22/${p.repo}`}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="card-hover group block rounded-2xl border border-border bg-surface p-6"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <h3 className="text-xl font-semibold tracking-tight">{p.title}</h3>
-                    <p className="mt-1 font-mono text-xs text-muted-foreground">{p.stack}</p>
+        {/* About */}
+        <Section id="o-mne" eyebrow="01 — O mě" title="Ahoj, jsem BlobyCZ.">
+          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl">
+            Jsem z <span className="text-foreground">Brna</span> a pracuji převážně na backendu.
+            Baví mě stavět spolehlivé služby, čistá API a nástroje, které ostatním zjednoduší práci.
+          </p>
+
+          <SubSection title="Jazyky">
+            {langs.map((l) => (
+              <Chip key={l.name} name={l.name}>
+                <l.Icon size={16} color={l.color} />
+              </Chip>
+            ))}
+          </SubSection>
+
+          <SubSection title="Systémy">
+            {os.map((o) => (
+              <Chip key={o.name} name={o.name}>
+                <o.Icon size={16} color={o.color} />
+              </Chip>
+            ))}
+          </SubSection>
+        </Section>
+
+        {/* Projects */}
+        <Section id="projekty" eyebrow="02 — Projekty" title="Vybraná práce.">
+          <div className="mt-12 grid gap-4">
+            {projects.map((p, i) => (
+              <FadeIn key={p.repo} delay={i * 0.06}>
+                <a
+                  href={`https://github.com/Bloby22/${p.repo}`}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="card-hover group relative block overflow-hidden rounded-3xl border border-border bg-surface/60 p-7 backdrop-blur-xl"
+                >
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-foreground/[0.04] via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                  <div className="relative flex items-start justify-between gap-4">
+                    <div className="flex-1">
+                      <div className="flex items-baseline gap-3">
+                        <span className="font-mono text-[11px] text-muted-foreground">0{i + 1}</span>
+                        <h3 className="text-2xl font-semibold tracking-tight md:text-3xl">{p.title}</h3>
+                      </div>
+                      <div className="mt-3 flex flex-wrap gap-1.5">
+                        {p.stack.map((s) => (
+                          <span
+                            key={s}
+                            className="rounded-full border border-border bg-background/40 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground"
+                          >
+                            {s}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border transition-all group-hover:rotate-45 group-hover:border-foreground/40 group-hover:bg-foreground group-hover:text-background">
+                      <ArrowUpRight className="h-4 w-4" />
+                    </div>
                   </div>
-                  <ArrowUpRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground" />
-                </div>
-                <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{p.description}</p>
-                {meta[p.repo] && (
-                  <div className="mt-5 flex items-center gap-4 font-mono text-xs text-muted-foreground">
-                    <span className="inline-flex items-center gap-1.5">
-                      <Star className="h-3.5 w-3.5" /> {meta[p.repo].stargazers_count}
-                    </span>
-                    <span className="inline-flex items-center gap-1.5">
-                      <GitFork className="h-3.5 w-3.5" /> {meta[p.repo].forks_count}
-                    </span>
-                  </div>
-                )}
-              </a>
-            </FadeIn>
-          ))}
-        </div>
-      </Section>
+                  <p className="relative mt-5 max-w-xl text-sm leading-relaxed text-muted-foreground md:text-base">
+                    {p.description}
+                  </p>
+                  {meta[p.repo] && (
+                    <div className="relative mt-6 flex items-center gap-5 font-mono text-xs text-muted-foreground">
+                      <span className="inline-flex items-center gap-1.5">
+                        <Star className="h-3.5 w-3.5" /> {meta[p.repo].stargazers_count}
+                      </span>
+                      <span className="inline-flex items-center gap-1.5">
+                        <GitFork className="h-3.5 w-3.5" /> {meta[p.repo].forks_count}
+                      </span>
+                    </div>
+                  )}
+                </a>
+              </FadeIn>
+            ))}
+          </div>
+        </Section>
 
-      {/* Contact */}
-      <Section id="kontakt" eyebrow="Kontakt" title="Pojďme zůstat ve spojení.">
-        <p className="mt-4 max-w-xl text-muted-foreground">
-          Otevřený nápadům, projektům i kávě v Brně.
-        </p>
-        <div className="mt-10 grid gap-3">
-          {contacts.map((c, i) => (
-            <FadeIn key={c.name} delay={i * 0.06}>
-              <a
-                href={c.href}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="card-hover group flex items-center justify-between rounded-2xl border border-border bg-surface px-5 py-4"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-secondary">
-                    <c.Icon size={18} />
+        {/* Contact */}
+        <Section id="kontakt" eyebrow="03 — Kontakt" title="Pojďme zůstat ve spojení.">
+          <p className="mt-6 max-w-xl text-lg text-muted-foreground">
+            Otevřený nápadům, projektům i kávě v Brně.
+          </p>
+          <div className="mt-12 grid gap-3">
+            {contacts.map((c, i) => (
+              <FadeIn key={c.name} delay={i * 0.06}>
+                <a
+                  href={c.href}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="card-hover group flex items-center justify-between rounded-2xl border border-border bg-surface/60 px-6 py-5 backdrop-blur-xl"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-secondary transition-colors group-hover:bg-foreground group-hover:text-background">
+                      <c.Icon size={18} />
+                    </div>
+                    <div>
+                      <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{c.name}</p>
+                      <p className="mt-0.5 font-mono text-base text-foreground">{c.handle}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">{c.name}</p>
-                    <p className="font-mono text-base text-foreground">{c.handle}</p>
-                  </div>
-                </div>
-                <ArrowUpRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground" />
-              </a>
-            </FadeIn>
-          ))}
-        </div>
-      </Section>
+                  <ArrowUpRight className="h-5 w-5 text-muted-foreground transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground" />
+                </a>
+              </FadeIn>
+            ))}
+          </div>
+        </Section>
 
-      <footer className="border-t border-border py-10 text-center font-mono text-xs text-muted-foreground">
-        © {new Date().getFullYear()} BlobyCZ
-      </footer>
+        <footer className="mt-20 flex items-center justify-between border-t border-border py-8 font-mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
+          <span>© {new Date().getFullYear()} BlobyCZ</span>
+          <span>built with care</span>
+        </footer>
+      </div>
     </main>
   );
 }
@@ -248,8 +294,10 @@ function Section({
   return (
     <section id={id} className="scroll-mt-28 py-32">
       <FadeIn>
-        <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">{eyebrow}</p>
-        <h2 className="mt-3 text-balance text-4xl font-semibold tracking-tight md:text-5xl">{title}</h2>
+        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">{eyebrow}</p>
+        <h2 className="text-gradient-light mt-4 text-balance text-5xl font-semibold tracking-[-0.03em] md:text-6xl">
+          {title}
+        </h2>
       </FadeIn>
       {children}
     </section>
@@ -259,8 +307,8 @@ function Section({
 function SubSection({ title, children }: { title: string; children: ReactNode }) {
   return (
     <FadeIn>
-      <div className="mt-10">
-        <h3 className="font-mono text-xs uppercase tracking-widest text-muted-foreground">{title}</h3>
+      <div className="mt-12">
+        <h3 className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">{title}</h3>
         <div className="mt-4 flex flex-wrap gap-2">{children}</div>
       </div>
     </FadeIn>
@@ -269,7 +317,7 @@ function SubSection({ title, children }: { title: string; children: ReactNode })
 
 function Chip({ name, children }: { name: string; children: ReactNode }) {
   return (
-    <div className="flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5 text-sm">
+    <div className="group flex items-center gap-2 rounded-full border border-border bg-surface/60 px-3.5 py-1.5 text-sm backdrop-blur-xl transition-all hover:-translate-y-0.5 hover:border-foreground/30 hover:bg-surface-2">
       {children}
       <span>{name}</span>
     </div>
@@ -279,10 +327,10 @@ function Chip({ name, children }: { name: string; children: ReactNode }) {
 function FadeIn({ children, delay = 0 }: { children: ReactNode; delay?: number }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 14 }}
+      initial={{ opacity: 0, y: 18 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
     </motion.div>
